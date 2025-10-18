@@ -1,4 +1,4 @@
-// src/components/dashboard/RegistrationsSummary.tsx
+
 "use client";
 
 import * as React from "react";

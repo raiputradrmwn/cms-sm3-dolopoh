@@ -1,4 +1,4 @@
-// src/app/admin/layout.tsx
+
 "use client";
 
 import * as React from "react";

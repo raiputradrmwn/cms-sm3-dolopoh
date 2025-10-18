@@ -14,7 +14,7 @@ export function QuickActions() {
       <CardContent className="flex flex-wrap gap-2">
         <Button asChild><Link href="/dashboard/berita/tulis">Tulis Berita</Link></Button>
         <Button asChild variant="outline"><Link href="/dashboard/berita">Kelola Berita</Link></Button>
-        <Button asChild variant="outline"><Link href="/dashboard/registrations">Kelola Pendaftaran</Link></Button>
+        <Button asChild variant="outline"><Link href="/dashboard/pendaftaran">Kelola Pendaftaran</Link></Button>
       </CardContent>
     </Card>
   );

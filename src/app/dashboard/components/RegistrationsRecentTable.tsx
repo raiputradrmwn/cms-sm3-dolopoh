@@ -1,4 +1,4 @@
-// src/components/dashboard/RegistrationsRecentTable.tsx
+
 "use client";
 
 import * as React from "react";
@@ -61,7 +61,7 @@ export function RegistrationsRecentTable() {
           </p>
         </div>
         <Link
-          href="/admin/registrations"
+          href="/dashboard/pendaftaran"
           className="text-sm underline-offset-4 hover:underline"
         >
           Kelola
@@ -116,7 +116,7 @@ export function RegistrationsRecentTable() {
                 >
                   <TableCell className="p-4">
                     <Link
-                      href="/admin/registrations"
+                      href="/dashboard/pendaftaran"
                       className="font-medium hover:underline inline-flex items-center gap-2"
                       title={`Kelola ${r.regNo}`}
                     >

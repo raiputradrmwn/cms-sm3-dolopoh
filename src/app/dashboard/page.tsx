@@ -1,23 +1,7 @@
-// src/app/admin/page.tsx
+
 "use client";
 
 import * as React from "react";
-import { AppSidebar } from "@/components/layout/app-sidebar";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-
 import { StatsCards } from "./components/StatsCards";
 import { NewsRecentTable } from "./components/NewsRecentTable";
 import { RegistrationsRecentTable } from "./components/RegistrationsRecentTable";

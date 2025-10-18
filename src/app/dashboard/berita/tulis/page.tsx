@@ -1,4 +1,4 @@
-// src/app/admin/news/new/page.tsx
+
 "use client";
 
 import * as React from "react";

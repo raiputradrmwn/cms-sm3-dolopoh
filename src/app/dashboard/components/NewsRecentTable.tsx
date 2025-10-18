@@ -35,7 +35,7 @@ export function NewsRecentTable() {
           </p>
         </div>
         <Button asChild variant="outline" size="sm">
-          <Link href="/admin/news">Lihat Semua</Link>
+          <Link href="/dashboard/berita">Lihat Semua</Link>
         </Button>
       </CardHeader>
 
@@ -102,7 +102,7 @@ export function NewsRecentTable() {
                           ].join(" ")}
                         />
                         <Link
-                          href={`/admin/news/${n.id}`}
+                          href={`/dashboard/berita/${n.id}`}
                           className="font-medium hover:underline block truncate"
                           title={n.title}
                         >
@@ -141,7 +141,7 @@ export function NewsRecentTable() {
                         variant="ghost"
                         className="ml-auto gap-2"
                       >
-                        <Link href={`/admin/news/${n.id}`}>
+                        <Link href={`/dashboard/berita/${n.id}`}>
                           <FileEdit className="h-4 w-4" />
                           Edit
                         </Link>
@@ -159,7 +159,7 @@ export function NewsRecentTable() {
                     className="p-8 text-center text-muted-foreground"
                   >
                     Belum ada berita.{" "}
-                    <Link href="/admin/news/new" className="underline">
+                    <Link href="/dashboard/berita/tulis" className="underline">
                       Tulis berita pertama
                     </Link>
                     .
