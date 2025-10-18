@@ -1,0 +1,12 @@
+{
+  "totalNews": 8,
+  "publishedCount": 5,
+  "new7d": 2,
+  "verified7d": 2,
+  "perMajor": [
+    { "major": "Teknik Kendaraan Ringan Otomotif", "count": 2 },
+    { "major": "Desain Komunikasi Visual/Komputer", "count": 1 },
+    { "major": "Teknik Bisnis Sepeda Motor", "count": 1 },
+    { "major": "Tata Busana", "count": 1 }
+  ]
+}

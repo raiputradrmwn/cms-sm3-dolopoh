@@ -1,0 +1,70 @@
+{
+  "data": [
+    {
+      "id": "r1",
+      "regNo": "PPDB-2025-0001",
+      "name": "Alya Putri",
+      "nisn": "0056789012",
+      "major": "Teknik Kendaraan Ringan Otomotif",
+      "status": "BARU",
+      "documents": { "kk": "#", "ijazah": "#", "raport": "#", "foto": "#" },
+      "createdAt": "2025-10-15T07:40:00.000Z",
+      "updatedAt": "2025-10-15T07:40:00.000Z"
+    },
+    {
+      "id": "r2",
+      "regNo": "PPDB-2025-0002",
+      "name": "Bagas Pratama",
+      "nisn": "0056789013",
+      "major": "Desain Komunikasi Visual/Komputer",
+      "status": "DIVERIFIKASI",
+      "documents": { "kk": "#", "ijazah": "#", "raport": "#", "foto": "#" },
+      "createdAt": "2025-10-14T10:10:00.000Z",
+      "updatedAt": "2025-10-15T01:00:00.000Z"
+    },
+    {
+      "id": "r3",
+      "regNo": "PPDB-2025-0003",
+      "name": "Citra Lestari",
+      "nisn": "0056789014",
+      "major": "Teknik Bisnis Sepeda Motor",
+      "status": "BARU",
+      "documents": { "kk": "#", "ijazah": "#", "raport": "#", "foto": "#" },
+      "createdAt": "2025-10-13T09:15:00.000Z",
+      "updatedAt": "2025-10-13T09:15:00.000Z"
+    },
+    {
+      "id": "r4",
+      "regNo": "PPDB-2025-0004",
+      "name": "Dimas Arya",
+      "nisn": "0056789015",
+      "major": "Tata Busana",
+      "status": "DITOLAK",
+      "documents": { "kk": "#", "ijazah": "#", "raport": "#", "foto": "#" },
+      "createdAt": "2025-10-12T06:00:00.000Z",
+      "updatedAt": "2025-10-12T06:00:00.000Z"
+    },
+    {
+      "id": "r5",
+      "regNo": "PPDB-2025-0005",
+      "name": "Eka Sari",
+      "nisn": "0056789016",
+      "major": "Teknik Kendaraan Ringan Otomotif",
+      "status": "DIVERIFIKASI",
+      "documents": { "kk": "#", "ijazah": "#", "raport": "#", "foto": "#" },
+      "createdAt": "2025-10-10T08:30:00.000Z",
+      "updatedAt": "2025-10-11T07:00:00.000Z"
+    }
+  ],
+  "total": 5,
+  "page": 1,
+  "limit": 10,
+  "new7d": 2,
+  "verified7d": 2,
+  "perMajor": [
+    { "major": "Teknik Kendaraan Ringan Otomotif", "count": 2 },
+    { "major": "Desain Komunikasi Visual/Komputer", "count": 1 },
+    { "major": "Teknik Bisnis Sepeda Motor", "count": 1 },
+    { "major": "Tata Busana", "count": 1 }
+  ]
+}

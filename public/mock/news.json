@@ -1,0 +1,96 @@
+{
+  "data": [
+    {
+      "id": "n1",
+      "title": "PPDB SMK 3 Dolopo 2025 Resmi Dibuka",
+      "slug": "ppdb-smk-3-dolopo-2025",
+      "category": "Pengumuman",
+      "coverUrl": "",
+      "content": "Penerimaan Peserta Didik Baru (PPDB) 2025 resmi dibuka...",
+      "published": true,
+      "createdAt": "2025-10-01T08:10:00.000Z",
+      "updatedAt": "2025-10-15T10:05:00.000Z"
+    },
+    {
+      "id": "n2",
+      "title": "Kegiatan Donor Darah Bersama PMI",
+      "slug": "kegiatan-donor-darah",
+      "category": "Kegiatan",
+      "coverUrl": "",
+      "content": "SMK 3 Dolopo bekerja sama dengan PMI mengadakan donor darah...",
+      "published": true,
+      "createdAt": "2025-09-20T07:00:00.000Z",
+      "updatedAt": "2025-10-10T11:20:00.000Z"
+    },
+    {
+      "id": "n3",
+      "title": "Siswa RPL Juara 1 Lomba Software",
+      "slug": "rpl-juara-1-software",
+      "category": "Prestasi",
+      "coverUrl": "",
+      "content": "Selamat kepada tim RPL yang meraih juara 1...",
+      "published": true,
+      "createdAt": "2025-09-10T02:10:00.000Z",
+      "updatedAt": "2025-10-08T09:00:00.000Z"
+    },
+    {
+      "id": "n4",
+      "title": "Workshop UI/UX untuk Kelas XI",
+      "slug": "workshop-ui-ux",
+      "category": "Kegiatan",
+      "coverUrl": "",
+      "content": "Workshop UI/UX diselenggarakan untuk meningkatkan skill desain...",
+      "published": false,
+      "createdAt": "2025-10-05T03:30:00.000Z",
+      "updatedAt": "2025-10-05T03:30:00.000Z"
+    },
+    {
+      "id": "n5",
+      "title": "Pengumuman Libur Maulid Nabi",
+      "slug": "libur-maulid-nabi",
+      "category": "Pengumuman",
+      "coverUrl": "",
+      "content": "Sekolah libur memperingati Maulid Nabi...",
+      "published": true,
+      "createdAt": "2025-09-27T01:00:00.000Z",
+      "updatedAt": "2025-10-02T02:00:00.000Z"
+    },
+    {
+      "id": "n6",
+      "title": "Bazar Kewirausahaan Siswa",
+      "slug": "bazar-kewirausahaan",
+      "category": "Kegiatan",
+      "coverUrl": "",
+      "content": "Siswa menampilkan produk kreatif dalam bazar kewirausahaan...",
+      "published": false,
+      "createdAt": "2025-10-09T05:00:00.000Z",
+      "updatedAt": "2025-10-09T05:00:00.000Z"
+    },
+    {
+      "id": "n7",
+      "title": "Prestasi Basket Putra Tingkat Kabupaten",
+      "slug": "basket-putra-juara",
+      "category": "Prestasi",
+      "coverUrl": "",
+      "content": "Tim basket putra meraih juara tingkat kabupaten...",
+      "published": true,
+      "createdAt": "2025-08-30T06:00:00.000Z",
+      "updatedAt": "2025-09-01T01:00:00.000Z"
+    },
+    {
+      "id": "n8",
+      "title": "Tips Belajar Efektif Menjelang Ujian",
+      "slug": "tips-belajar-efektif",
+      "category": "Lainnya",
+      "coverUrl": "",
+      "content": "Berikut beberapa tips belajar efektif menjelang ujian...",
+      "published": false,
+      "createdAt": "2025-10-12T02:40:00.000Z",
+      "updatedAt": "2025-10-12T02:40:00.000Z"
+    }
+  ],
+  "total": 8,
+  "page": 1,
+  "limit": 10,
+  "publishedCount": 5
+}
