@@ -1,4 +1,4 @@
-
+// src/app/dashboard/berita/page.tsx
 "use client";
 
 import * as React from "react";
@@ -12,10 +12,38 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Newspaper } from "lucide-react";
 
+// ---- Types untuk data mock ----
+type NewsItem = {
+  id: string;
+  title: string;
+  slug?: string;
+  category: string;
+  coverUrl?: string;
+  content?: string;
+  published: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type NewsResponse = {
+  data: NewsItem[];
+  total: number;
+  page: number;
+  limit: number;
+  publishedCount?: number;
+};
+
 export default function NewsListPage() {
-  const { data, isFetching } = useApiQuery<any>(["news","all"], "/mock/news.json");
-  const all = data?.data ?? [];
-  const items = all.filter((n: any) => n.published);
+  const { data, isFetching } = useApiQuery<NewsResponse>(
+    ["news", "all"],
+    "/mock/news.json"
+  );
+
+  const all: NewsItem[] = data?.data ?? [];
+  const items: NewsItem[] = React.useMemo(
+    () => all.filter((n: NewsItem) => n.published),
+    [all]
+  );
 
   return (
     <div className="space-y-4">
@@ -44,7 +72,7 @@ export default function NewsListPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {items.map((n: any) => (
+                {items.map((n: NewsItem) => (
                   <TableRow key={n.id} className="hover:bg-secondary/50">
                     <TableCell className="p-4">
                       <div className="flex items-start gap-2">
@@ -66,6 +94,15 @@ export default function NewsListPage() {
                     </TableCell>
                   </TableRow>
                 ))}
+
+                {isFetching && items.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={3} className="p-8 text-center text-muted-foreground">
+                      Memuat…
+                    </TableCell>
+                  </TableRow>
+                )}
+
                 {!isFetching && items.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={3} className="p-8 text-center text-muted-foreground">

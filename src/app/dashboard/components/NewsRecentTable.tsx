@@ -5,12 +5,7 @@ import * as React from "react";
 import { useApiQuery } from "@/lib/api/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,12 +13,41 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { Clock, Newspaper, FileEdit } from "lucide-react";
 
+// ===== Types =====
+type NewsItem = {
+  id: string;
+  title: string;
+  category: string;
+  published: boolean;
+  createdAt: string;
+  updatedAt: string;
+  coverUrl?: string;
+  slug?: string;
+  content?: string;
+};
+
+type NewsResponse = {
+  data: NewsItem[];
+  total: number;
+  page: number;
+  limit: number;
+  publishedCount?: number;
+};
+
 export function NewsRecentTable() {
-  const { data, isFetching } = useApiQuery<any>(
+  const { data, isFetching } = useApiQuery<NewsResponse>(
     ["news", "recent"],
     "/mock/news.json"
   );
-  const items = data?.data ?? [];
+
+  const all: NewsItem[] = data?.data ?? [];
+  const items: NewsItem[] = React.useMemo(() => {
+    // urut terbaru & ambil 5
+    const sorted = [...all].sort(
+      (a, b) => +new Date(b.updatedAt) - +new Date(a.updatedAt)
+    );
+    return sorted.slice(0, 5);
+  }, [all]);
 
   return (
     <Card className="shadow-sm">
@@ -54,7 +78,7 @@ export function NewsRecentTable() {
 
             <TableBody>
               {/* Skeleton saat loading */}
-              {isFetching && (!items || items.length === 0) &&
+              {isFetching && items.length === 0 &&
                 Array.from({ length: 5 }).map((_, i) => (
                   <TableRow key={`sk-${i}`}>
                     <TableCell className="p-4">
@@ -79,15 +103,14 @@ export function NewsRecentTable() {
                 ))}
 
               {/* Data */}
-              {items.map((n: any) => {
-                const isPublished = !!n.published;
+              {items.map((n) => {
+                const isPublished = n.published;
                 return (
                   <TableRow
                     key={n.id}
                     className={[
                       "hover:bg-secondary/50 transition-colors",
                       "odd:bg-background even:bg-muted/30",
-                      // aksen kiri hijau untuk published, amber untuk draft
                       isPublished
                         ? "border-l-2 border-l-green-600"
                         : "border-l-2 border-l-amber-500",

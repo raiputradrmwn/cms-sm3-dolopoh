@@ -21,9 +21,8 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const router = useRouter()
   const pathname = usePathname()
-  const [loading, setLoading] = React.useState(false)
+  const [loading, ] = React.useState(false)
 
   const menu = [
     { title: "Beranda", url: "/dashboard", icon: Home },
@@ -31,21 +30,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     { title: "Pendaftaran", url: "/dashboard/pendaftaran", icon: ClipboardList },
   ]
 
-  // async function handleLogout() {
-  //   try {
-  //     setLoading(true)
-  //     await api.post("/auth/logout")
-  //     router.replace("/auth/login")
-  //   } catch (e) {
-  //     console.error("Logout gagal", e)
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // }
 
   return (
     <Sidebar {...props}>
-      {/* Header dengan logo sekolah */}
+
       <SidebarHeader>
         <div className="flex items-center gap-3 font-semibold text-lg px-3">
           <div className="h-10 w-10 rounded-xl bg-primary/10 grid place-items-center text-primary font-bold">

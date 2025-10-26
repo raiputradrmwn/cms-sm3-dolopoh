@@ -1,4 +1,4 @@
-
+// src/app/dashboard/page.tsx (atau sesuai pathmu)
 "use client";
 
 import * as React from "react";
@@ -9,17 +9,27 @@ import { RegistrationsSummary } from "./components/RegistrationsSummary";
 import { QuickActions } from "./components/QuickAction";
 import { useApiQuery } from "@/lib/api/hooks";
 
+// ===== Types =====
+type PerMajor = { major: string; count: number };
+
+type StatsResponse = {
+  totalNews: number;
+  publishedCount: number;
+  new7d: number;
+  verified7d: number;
+  perMajor: PerMajor[];
+};
+
 export default function Page() {
   // Ambil data dummy gabungan untuk kartu statistik & ringkasan jurusan
-  const stats = useApiQuery<any>(["stats"], "/mock/stats.json");
+  const stats = useApiQuery<StatsResponse>(["stats"], "/mock/stats.json");
   const loading = stats.isFetching;
 
   const totalNews = stats.data?.totalNews ?? 0;
   const publishedNews = stats.data?.publishedCount ?? 0;
   const newRegistrations7d = stats.data?.new7d ?? 0;
   const verifiedRegistrations7d = stats.data?.verified7d ?? 0;
-  const perMajor: { major: string; count: number }[] =
-    stats.data?.perMajor ?? [];
+  const perMajor: PerMajor[] = stats.data?.perMajor ?? [];
 
   return (
     <main className="p-4">
