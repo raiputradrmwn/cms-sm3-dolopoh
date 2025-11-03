@@ -1,14 +1,9 @@
+// src/lib/auth/types.ts
 export type LoginPayload = { email: string; password: string };
 
 export type RawLoginResponse = {
-  meta?: any;
+  meta?: { code?: number; success?: boolean; message?: string };
   data?: { token?: string };
-  token?: string;
-  access_token?: string;
-  user?: any;
 };
 
-export type LoginResponse = {
-  token: string;
-  user?: any;
-};
+export type LoginResponse = { token: string };

@@ -10,7 +10,7 @@ api.interceptors.request.use((config) => {
   const token = Cookies.get("token"); // nama cookie yang kita pakai
   if (token) {
     config.headers = config.headers ?? {};
-    (config.headers as any).Authorization = `Bearer ${token}`;
+    (config.headers).Authorization = `Bearer ${token}`;
   }
   return config;
 });

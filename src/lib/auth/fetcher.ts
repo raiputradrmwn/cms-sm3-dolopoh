@@ -1,6 +1,6 @@
-import type { LoginPayload, LoginResponse, RawLoginResponse } from "./types";
+// src/lib/auth/fetcher.ts
+import type { LoginPayload, RawLoginResponse, LoginResponse } from "./types";
 
-/** FE → Next API → NestJS, kembalikan { token } */
 export async function loginRequest(payload: LoginPayload): Promise<LoginResponse> {
   const res = await fetch("/api/auth/login/admin", {
     method: "POST",
@@ -10,15 +10,14 @@ export async function loginRequest(payload: LoginPayload): Promise<LoginResponse
 
   const text = await res.text();
   let raw: RawLoginResponse = {};
-  try { raw = text ? (JSON.parse(text) as RawLoginResponse) : {}; } catch {}
+  try { raw = text ? JSON.parse(text) as RawLoginResponse : {}; } catch {}
 
   if (!res.ok) {
-    const msg = (raw as any)?.message || raw?.meta?.message || "Login gagal";
-    throw new Error(msg);
+    throw new Error(raw?.meta?.message || "Login gagal");
   }
 
-  const token = raw.data?.token || raw.access_token || raw.token;
-  if (!token) throw new Error("Token tidak ditemukan pada respons login");
+  const token = raw.data?.token;
+  if (!token) throw new Error("Token tidak ditemukan");
 
-  return { token, user: raw.user ?? null };
+  return { token };
 }
