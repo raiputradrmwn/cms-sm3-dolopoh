@@ -32,7 +32,7 @@ export async function proxyJson(path: string, req: Request, opts: Opts = {}) {
   });
 
   const text = await upstream.text();
-  let data: any = null;
+  let data
   try { data = text ? JSON.parse(text) : null; } catch { data = { raw: text }; }
 
   if (!upstream.ok) {
