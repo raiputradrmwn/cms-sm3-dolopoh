@@ -1,8 +1,15 @@
-import { GalleryVerticalEnd } from "lucide-react"
+// src/app/login/page.tsx (atau sesuai pathmu)
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { GalleryVerticalEnd } from "lucide-react";
+import { LoginForm } from "@/components/layout/login-form";
 
-import { LoginForm } from "@/components/layout/login-form"
+export default async function LoginPage() {
+  const token = (await cookies()).get("token")?.value;
+  if (token) {
+    redirect("/dashboard");
+  }
 
-export default function LoginPage() {
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
@@ -15,5 +22,5 @@ export default function LoginPage() {
         <LoginForm />
       </div>
     </div>
-  )
+  );
 }

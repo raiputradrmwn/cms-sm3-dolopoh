@@ -1,43 +1,33 @@
-import { useQuery, UseQueryOptions, useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { api } from "./axios";
+"use client";
 
-export function useApiQuery<TData>(
+import { useQuery, useMutation, useQueryClient, UseQueryOptions, UseMutationResult } from "@tanstack/react-query";
+import type { Method } from "axios";
+import  api  from "./axios";
+
+
+export function useApiQuery<T>(
   key: (string | number)[],
   url: string,
-  opts?: Omit<UseQueryOptions<TData>, "queryKey" | "queryFn">
+  options?: Omit<UseQueryOptions<T>, "queryKey" | "queryFn">
 ) {
-  return useQuery<TData>({
+  return useQuery<T>({
     queryKey: key,
-    queryFn: async () => {
-      // Jika URL mulai dengan "/mock/", ambil langsung dari public/ (tanpa baseURL)
-      if (url.startsWith("/mock/")) {
-        const res = await fetch(url, { cache: "no-store" });
-        if (!res.ok) throw new Error(`Failed to fetch ${url}`);
-        return (await res.json()) as TData;
-      }
-      // Selain itu, pakai axios instance (baseURL: "/api")
-      const res = await api.get<TData>(url);
-      return res.data;
-    },
-    staleTime: 30_000,
-    ...opts,
+    queryFn: async () => (await api.get<T>(url)).data,
+    ...options,
   });
 }
 
-// (opsional) mutation tetap sama
-export function useApiMutation<TVars = unknown, TRes = unknown>(
-  method: "post" | "patch" | "put" | "delete",
+export function useApiMutation<TBody, TRes>(
+  method: Method,
   url: string
-) {
-  return useMutation<TRes, unknown, TVars>({
-    mutationFn: async (vars) => {
-      const res = await api.request<TRes>({
-        url,
-        method,
-        data: method === "delete" ? undefined : vars,
-      });
-      return res.data;
-    },
+): UseMutationResult<TRes, unknown, TBody> {
+  return useMutation<TRes, unknown, TBody>({
+    mutationFn: async (body: TBody) => (await api.request<TRes>({ url, method, data: body })).data,
   });
+}
+
+export function useInvalidate() {
+  const qc = useQueryClient();
+  return (keys: (string | number)[][]) =>
+    Promise.all(keys.map((k) => qc.invalidateQueries({ queryKey: k })));
 }
