@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Providers from "./provider";
+
 import { poppins } from "@/style/font";
-import { Toaster } from "sonner";
+
+import QueryProvider from "./provider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,9 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.className}`}>
-        <Providers>
+        <QueryProvider>
           {children}
-        </Providers>
+        </QueryProvider>
       </body>
     </html>
   );

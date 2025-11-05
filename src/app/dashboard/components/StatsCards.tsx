@@ -81,13 +81,13 @@ export function StatsCards({
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm text-muted-foreground">
-            Diverifikasi (7 hari)
+            Total Pendaftar Baru
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-3xl font-semibold">{verifiedRegistrations}</div>
           <div className="text-xs text-muted-foreground mt-1">
-            Status DIVERIFIKASI
+            Total terverifikasi
           </div>
         </CardContent>
       </Card>
