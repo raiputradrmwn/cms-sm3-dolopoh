@@ -1,4 +1,4 @@
-// src/app/dashboard/berita/tulis/page.tsx
+
 "use client";
 
 import * as React from "react";
@@ -9,88 +9,65 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { useApiMutation } from "@/lib/api/hooks";
 import { toast } from "sonner";
 import { ImagePlus, Save } from "lucide-react";
 import NewsEditor from "../components/Editor";
-// ===== Types =====
-type CreateNewsInput = {
-  title: string;
-  category: "Pengumuman" | "Kegiatan" | "Prestasi" | "Lainnya";
-  coverUrl?: string | null;
-  content: string; // HTML dari editor
-  published: boolean;
-};
 
 type CreateNewsResponse = {
-  id: string;
-  slug: string;
-  createdAt: string;
-  updatedAt: string;
-  // tambahkan field lain dari Nest jika ada
+  data?: { id?: string };
+  meta?: { message?: string };
 };
 
 export default function NewsCreatePage() {
   const router = useRouter();
-  const [title, setTitle] = React.useState<string>("");
-  const [category, setCategory] =
-    React.useState<CreateNewsInput["category"]>("Pengumuman");
-  const [cover, setCover] = React.useState<string | null>(null);
-  const [content, setContent] = React.useState<string>("");
-  const [published, setPublished] = React.useState<boolean>(true);
 
-  // Nanti arahkan ke endpoint Nest kamu, mis: "/news"
-  const createNews = useApiMutation<CreateNewsInput, CreateNewsResponse>(
-    "post",
-    "/news"
-  );
+  const [title, setTitle] = React.useState("");
+  const [content, setContent] = React.useState("");
+  const [published, setPublished] = React.useState(true);
+  const [photo, setPhoto] = React.useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = React.useState<string | null>(null);
+  const [submitting, setSubmitting] = React.useState(false);
 
-  const onPickCover = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0];
-    if (!f) return;
-    const b64 = await toBase64(f);
-    setCover(String(b64)); // mock preview; ganti ke URL dari server saat sudah ada upload
+  const onPickCover = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0] ?? null;
+    setPhoto(f);
+    
+    setPhotoPreview(f ? URL.createObjectURL(f) : null);
     e.target.value = "";
   };
 
   const onSubmit = async () => {
-    if (!title.trim()) {
-      toast.error("Judul wajib diisi");
-      return;
-    }
-    const emptyHtml =
-      !content || content.replace(/<[^>]*>/g, "").trim().length === 0;
-    if (emptyHtml) {
-      toast.error("Konten belum diisi");
-      return;
-    }
+    if (!title.trim()) return toast.error("Judul wajib diisi");
+    const emptyHtml = !content || content.replace(/<[^>]*>/g, "").trim().length === 0;
+    if (emptyHtml) return toast.error("Konten belum diisi");
 
-    const payload: CreateNewsInput = {
-      title,
-      category,
-      coverUrl: cover,
-      content,
-      published,
-    };
-
+    setSubmitting(true);
     try {
-      await createNews.mutateAsync(payload);
+      
+      const fd = new FormData();
+      fd.append("title", title);
+      fd.append("content", content);
+      fd.append("status", published ? "PUBLISHED" : "DRAFT");
+      if (photo) fd.append("photo", photo);
+
+      
+      const res = await fetch("/api/news", { method: "POST", body: fd });
+      const data = (await res.json().catch(() => ({}))) as CreateNewsResponse;
+
+      if (!res.ok) {
+        throw new Error(data?.meta?.message || "Gagal menyimpan berita");
+      }
+
       toast.success("Berita berhasil disimpan");
       router.push("/dashboard/berita");
-    } catch (e) {
-      // Saat mock (tanpa backend) boleh tetap arahkan agar alur terasa lengkap
-      console.error(e);
-      toast.success("Simulasi sukses (mock). Nanti akan tersimpan ke NestJS.");
-      router.push("/dashboard/berita");
+    } catch (error) {
+      console.error(error);
+      const message = error instanceof Error ? error.message : String(error);
+      toast.error(message || "Gagal menyimpan berita");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -107,39 +84,20 @@ export default function NewsCreatePage() {
         <CardHeader>
           <CardTitle>Informasi Berita</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="title">Judul</Label>
-              <Input
-                id="title"
-                placeholder="Masukkan judul berita…"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </div>
 
-            <div className="space-y-2">
-              <Label>Kategori</Label>
-              <Select
-                value={category}
-                onValueChange={(v) =>
-                  setCategory(v as CreateNewsInput["category"])
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih kategori" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Pengumuman">Pengumuman</SelectItem>
-                  <SelectItem value="Kegiatan">Kegiatan</SelectItem>
-                  <SelectItem value="Prestasi">Prestasi</SelectItem>
-                  <SelectItem value="Lainnya">Lainnya</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+        <CardContent className="space-y-4">
+          {/* Judul */}
+          <div className="space-y-2">
+            <Label htmlFor="title">Judul</Label>
+            <Input
+              id="title"
+              placeholder="Masukkan judul berita…"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </div>
 
+          {/* Sampul */}
           <div className="space-y-2">
             <Label>Sampul (opsional)</Label>
             <div className="flex items-center gap-2">
@@ -148,9 +106,9 @@ export default function NewsCreatePage() {
                 <ImagePlus className="h-4 w-4 mr-2" /> Upload
               </Button>
             </div>
-            {cover && (
+            {photoPreview && (
               <img
-                src={cover}
+                src={photoPreview}
                 alt="Cover preview"
                 className="mt-2 h-40 w-full rounded-lg object-cover border"
               />
@@ -159,36 +117,25 @@ export default function NewsCreatePage() {
 
           <Separator />
 
+          {/* Konten (Tiptap) */}
           <div className="space-y-2">
             <Label>Konten</Label>
             <NewsEditor value={content} onChange={setContent} />
           </div>
 
+          {/* Status + Simpan */}
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-2">
-              <Switch
-                id="published"
-                checked={published}
-                onCheckedChange={setPublished}
-              />
-              <Label htmlFor="published">Terbitkan</Label>
+              <Switch id="published" checked={published} onCheckedChange={setPublished} />
+              <Label htmlFor="published">Terbitkan sekarang</Label>
             </div>
-            <Button onClick={onSubmit} disabled={createNews.isPending}>
+            <Button onClick={onSubmit} disabled={submitting}>
               <Save className="h-4 w-4 mr-2" />
-              {createNews.isPending ? "Menyimpan…" : "Simpan"}
+              {submitting ? "Menyimpan…" : "Simpan"}
             </Button>
           </div>
         </CardContent>
       </Card>
     </div>
   );
-}
-
-function toBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => resolve(String(r.result));
-    r.onerror = reject;
-    r.readAsDataURL(file);
-  });
 }

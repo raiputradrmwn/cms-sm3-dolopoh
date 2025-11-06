@@ -1,4 +1,4 @@
-// src/components/layout/app-sidebar.tsx
+
 "use client";
 
 import * as React from "react";
@@ -36,17 +36,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   async function handleLogout() {
     try {
       setLoading(true);
-
-      // Hapus token di cookie (SAMAKAN nama cookie-nya dengan yang kamu set saat login)
       Cookies.remove("token");
-      // Jika dulu sempat pakai nama lain:
-      Cookies.remove("access_token");
-
-      // (Opsional) Bersihkan cache lokal yang mungkin ada
-      // localStorage.removeItem("swr_students_list_1_10_v1");
-
       toast.success("Berhasil keluar");
-      router.replace("/"); // kembali ke halaman login
+      router.replace("/"); 
     } catch (e) {
       toast.error("Gagal logout, coba lagi.");
     } finally {
@@ -58,8 +50,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar {...props}>
       <SidebarHeader>
         <div className="flex items-center gap-3 font-semibold text-lg px-3">
-          <div className="h-10 w-10 rounded-xl bg-primary/10 grid place-items-center text-primary font-bold">
-            3
+          <div className="h-10 w-10 rounded-xl grid place-items-center text-primary font-bold">
+            <Image src="/images/logo.png" alt="Logo" width={32} height={32} />
           </div>
           <span>SMK 3 Dolopo</span>
         </div>
