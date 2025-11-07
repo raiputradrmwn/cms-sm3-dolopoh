@@ -42,9 +42,9 @@ export type NewsRow = {
 };
 export type CreateNewsInput = {
   title: string;
-  content: string;                 // HTML dari Tiptap
+  content: string; // HTML dari Tiptap
   status: "PUBLISHED" | "DRAFT";
-  photo?: File | null;             // file sampul
+  photo?: File | null; // file sampul
 };
 
 export type CreateNewsResponse = {
@@ -52,17 +52,26 @@ export type CreateNewsResponse = {
   data?: { id?: string };
 };
 export type NewsStatus = "PUBLISHED" | "DRAFT";
-export type NewsItem = {
+
+export type NewsDetail = {
   id: string;
   title: string;
-  headline?: string;      // optional: kalau backend simpan ringkasan terpisah
-  content?: string;       // isi (bisa HTML atau text – kita kirim text)
-  photo?: string | null;  // URL foto/sampul
+  headline?: string | null;
+  content: string; // bisa plain text atau html (tergantung backend)
+  photo?: string | null; // URL gambar sampul
   status: NewsStatus;
   created_at: string;
   updated_at: string;
 };
+
 export type NewsDetailResponse = {
-  meta?: { code?: number; success?: boolean; message?: string };
-  data: NewsRow;
+  meta?: { code: number; success: boolean; message?: string };
+  data: NewsDetail;
 };
+export type UpdateNewsInput =
+  | { id: string; form: FormData; json?: never } // ganti foto → kirim FormData
+  | {
+      id: string;
+      form?: never;
+      json: { title?: string; status?: NewsStatus; content?: string }; // tidak ganti foto → JSON
+    };

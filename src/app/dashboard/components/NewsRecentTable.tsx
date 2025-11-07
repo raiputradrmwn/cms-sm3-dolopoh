@@ -80,7 +80,7 @@ export function NewsRecentTable() {
                     <div className="flex items-start gap-2">
                       <Newspaper className={["mt-0.5 h-5 w-5 shrink-0", n.isPublished ? "text-green-600" : "text-amber-600"].join(" ")} />
                       <Link
-                        href={`/dashboard/berita/${n.id}`}
+                        href={`/dashboard/berita/${n.id}/edit`}
                         className="font-medium hover:underline block truncate"
                         title={n.title}
                       >

@@ -60,3 +60,8 @@ export type RegistrationItem = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type StudentDetailResponse = {
+  meta: { code: number; success: boolean; message: string };
+  data: Student;
+};

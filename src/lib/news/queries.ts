@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/api/axios";
-import type { NewsDetailResponse, NewsItem, NewsListResponse, NewsRow, RawNewsItem } from "./types";
+import type { NewsDetail, NewsDetailResponse, NewsListResponse, NewsRow, RawNewsItem } from "./types";
 
 function mapToRow(n: RawNewsItem): NewsRow {
   return {
@@ -35,13 +35,15 @@ export function useRecentPublishedNews(params = { page: 1, limit: 5 }) {
     select: (resp) => (resp?.data?.data ?? []).map(mapToRow),
   });
 }
-export function useNewsById(id: string | undefined) {
+export function useNewsDetail(id?: string) {
   return useQuery({
     queryKey: ["news", "detail", id],
-    enabled: Boolean(id),
-    queryFn: async (): Promise<NewsItem> => {
+    enabled: !!id,
+    queryFn: async (): Promise<NewsDetail> => {
       const r = await api.get<NewsDetailResponse>(`/news/${id}`);
       return r.data.data;
     },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 }

@@ -1,134 +1,254 @@
+
 "use client";
 
 import * as React from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Save, ImagePlus } from "lucide-react";
-import EditorClient from "../../components/Editor";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { useNewsById } from "@/lib/news/queries";
-import { useUpdateNews } from "@/lib/news/mutations";
-import { NewsStatus } from "@/lib/news/types";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { stripHtml } from "@/lib/news/text";
-export default function NewsEditPage() {
-  const router = useRouter();
-  const params = useParams<{ id: string }>();
-  const id = params.id;
+import { Save, ImagePlus, Maximize2 } from "lucide-react";
 
-  const { data, isFetching } = useNewsById(id);
+import EditorClient from "../../components/EditorClient";
+import { useNewsDetail } from "@/lib/news/queries";
+import { useUpdateNews } from "@/lib/news/mutations";
+import type { NewsStatus } from "@/lib/news/types";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { cn } from "@/lib/utils";
+
+function stripHtml(html: string) {
+  if (typeof window === "undefined") return html;
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  return (div.textContent || div.innerText || "").trim();
+}
+
+export default function NewsEditPage() {
+  const { id } = useParams<{ id: string }>();
+  const router = useRouter();
+
+  const { data: detail, isFetching } = useNewsDetail(id);
   const updateNews = useUpdateNews();
 
-  // state form
   const [title, setTitle] = React.useState("");
-  const [status, setStatus] = React.useState<NewsStatus>("PUBLISHED");
-  const [content, setContent] = React.useState(""); // EditorClient (HTML), kita strip saat submit
-  const [preview, setPreview] = React.useState<string | null>(null);
-  const [file, setFile] = React.useState<File | null>(null);
+  const [status, setStatus] = React.useState<NewsStatus>("DRAFT");
+  const [content, setContent] = React.useState<string>("");
+  const [coverFile, setCoverFile] = React.useState<File | null>(null); 
+  const [coverPreview, setCoverPreview] = React.useState<string | null>(null); 
+  const [fit, setFit] = React.useState<"cover" | "contain">("cover");
+  const [openPreview, setOpenPreview] = React.useState(false);
 
   React.useEffect(() => {
-    if (!data) return;
-    setTitle(data.title ?? "");
-    setStatus(data.status ?? "PUBLISHED");
-    setContent(data.content ?? data.headline ?? "");
-    setPreview(data.photo ?? null);
-  }, [data]);
+    if (!detail) return;
+    setTitle(detail.title || "");
+    setStatus(detail.status || "DRAFT");
+    setContent(detail.content || "");
+    
+    setCoverPreview(detail.photo || null);
+    
+  }, [detail]);
 
-  const onPickCover = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0] ?? null;
-    setFile(f);
-    if (f) setPreview(URL.createObjectURL(f));
+  
+  React.useEffect(() => {
+    return () => {
+      if (coverPreview?.startsWith("blob:")) {
+        URL.revokeObjectURL(coverPreview);
+      }
+    };
+  }, [coverPreview]);
+
+  const onPickCover = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setCoverFile(f);
+    
+    const url = URL.createObjectURL(f);
+    setCoverPreview(url);
     e.target.value = "";
   };
 
+  const onRemoveCover = () => {
+    
+    
+    if (coverPreview?.startsWith("blob:")) URL.revokeObjectURL(coverPreview);
+    setCoverFile(null);
+    setCoverPreview(null);
+  };
+
   const onSubmit = async () => {
+    if (!id) return;
     if (!title.trim()) return toast.error("Judul wajib diisi");
-
-    const form = new FormData();
-    form.append("title", title);
-    // kirim PLAIN TEXT (tanpa tag):
-    form.append("content", stripHtml(content));
-    form.append("status", status);
-    if (file) form.append("photo", file);
-
+    if (!content || stripHtml(content).length === 0)
+      return toast.error("Konten belum diisi");
     try {
-      await updateNews.mutateAsync({ id, form });
+      if (coverFile) {
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("status", status);
+        formData.append("content", content);
+        formData.append("photo", coverFile);
+        await updateNews.mutateAsync({ id, form: formData });
+      } else {
+        await updateNews.mutateAsync({
+          id,
+          json: { title, status, content },
+        });
+      }
       toast.success("Berita berhasil diperbarui");
       router.push("/dashboard/berita");
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      toast.error(err?.message || "Gagal memperbarui berita");
+      toast.error(err instanceof Error ? err.message : "Gagal memperbarui berita");
     }
   };
 
   return (
     <div className="space-y-4 w-full">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold tracking-tight">
-          {isFetching ? "Memuat…" : `Edit: ${data?.title ?? ""}`}
-        </h1>
-        <Button variant="outline" asChild>
+        <h1 className="text-xl font-semibold tracking-tight">Edit Berita</h1>
+        <Button asChild variant="outline">
           <Link href="/dashboard/berita">Kembali</Link>
         </Button>
       </div>
 
       <Card className="shadow-sm">
         <CardHeader>
-          <CardTitle>Perbarui Berita</CardTitle>
+          <CardTitle>Perbarui Informasi</CardTitle>
         </CardHeader>
+
         <CardContent className="space-y-4">
+          {isFetching && (
+            <p className="text-sm text-muted-foreground">Memuat data…</p>
+          )}
+
+          {/* Form atas */}
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="title">Judul</Label>
-              <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+              <Input
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
             </div>
 
             <div className="space-y-2">
               <Label>Status</Label>
               <Select value={status} onValueChange={(v) => setStatus(v as NewsStatus)}>
-                <SelectTrigger><SelectValue placeholder="Pilih status" /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue placeholder="Pilih status" />
+                </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="PUBLISHED">PUBLISHED</SelectItem>
-                  <SelectItem value="DRAFT">DRAFT</SelectItem>
+                  <SelectItem value="PUBLISHED">Published</SelectItem>
+                  <SelectItem value="DRAFT">Draft</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
+          {/* Sampul */}
           <div className="space-y-2">
             <Label>Sampul (opsional)</Label>
             <div className="flex items-center gap-2">
               <Input type="file" accept="image/*" onChange={onPickCover} />
               <Button type="button" variant="outline" disabled>
-                <ImagePlus className="h-4 w-4 mr-2" /> Ubah
+                <ImagePlus className="h-4 w-4 mr-2" />
+                Upload
               </Button>
             </div>
-            {preview && (
-              <img
-                src={preview}
-                alt="Preview sampul"
-                className="mt-2 h-40 w-full rounded-lg object-cover border"
-              />
+
+            {coverPreview && (
+              <div className="mt-3 rounded-lg border bg-muted/20">
+                <AspectRatio ratio={16 / 9}>
+                  <img
+                    src={coverPreview}
+                    alt="Pratinjau sampul"
+                    className={cn(
+                      "h-full w-full rounded-lg",
+                      fit === "cover" ? "object-cover" : "object-contain bg-black/5"
+                    )}
+                  />
+                </AspectRatio>
+
+                {/* Toolbar preview */}
+                <div className="flex items-center justify-between p-2 text-xs text-muted-foreground">
+                  <span>Pratinjau Sampul (16:9)</span>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      size="sm"
+                      variant={fit === "cover" ? "default" : "outline"}
+                      className="h-7 px-2"
+                      onClick={() => setFit("cover")}
+                    >
+                      Isi
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={fit === "contain" ? "default" : "outline"}
+                      className="h-7 px-2"
+                      onClick={() => setFit("contain")}
+                    >
+                      Muat
+                    </Button>
+
+                    <Dialog open={openPreview} onOpenChange={setOpenPreview}>
+                      <DialogTrigger asChild>
+                        <Button size="sm" variant="ghost" className="h-7 px-2">
+                          <Maximize2 className="h-4 w-4" />
+                          <span className="sr-only">Perbesar</span>
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-4xl">
+                        <DialogHeader>
+                          <DialogTitle>Pratinjau Penuh</DialogTitle>
+                        </DialogHeader>
+                        <div className="max-h-[80vh]">
+                          <img
+                            src={coverPreview}
+                            alt="Preview penuh"
+                            className="mx-auto max-h-[75vh] w-auto object-contain"
+                          />
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="h-7 px-2"
+                      onClick={onRemoveCover}
+                    >
+                      Hapus
+                    </Button>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
-
           <Separator />
 
           <div className="space-y-2">
             <Label>Konten</Label>
-            {/* Editor menyimpan HTML di state; saat submit kita strip ke plain text */}
             <EditorClient value={content} onChange={setContent} />
-            <p className="text-xs text-muted-foreground">
-              *Saat disimpan, konten akan dikirim sebagai <b>teks tanpa tag HTML</b>.
-            </p>
           </div>
-
-          <div className="flex justify-end pt-2">
+          <div className="flex items-center justify-end pt-2">
             <Button onClick={onSubmit} disabled={updateNews.isPending}>
               <Save className="h-4 w-4 mr-2" />
               {updateNews.isPending ? "Menyimpan…" : "Simpan Perubahan"}

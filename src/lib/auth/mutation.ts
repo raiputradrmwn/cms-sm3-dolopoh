@@ -13,7 +13,7 @@ export function useLoginMutation() {
     mutationFn: (p) => loginRequest(p),
     onSuccess: (data) => {
       Cookies.set(TOKEN_COOKIE, data.token, {
-        expires: 7,
+        expires: 1,
         sameSite: "lax",
         secure: process.env.NODE_ENV === "production",
         path: "/",

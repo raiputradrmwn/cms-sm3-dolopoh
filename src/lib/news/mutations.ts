@@ -49,18 +49,35 @@ export function useCreateNewsMutation() {
     },
   });
 }
-
-export type UpdateNewsInput = {
-  id: string;
-  form: FormData; 
-};
-
+export type NewsStatus = "PUBLISHED" | "DRAFT";
+export type UpdateNewsInput =
+  | { id: string; form: FormData; json?: never } // ganti foto → kirim FormData
+  | {
+      id: string;
+      form?: never;
+      json: { title?: string; status?: NewsStatus; content?: string }; // tidak ganti foto → JSON
+    };
 export function useUpdateNews() {
   return useMutation({
-    mutationFn: async ({ id, form }: UpdateNewsInput) => {
-      // Axios otomatis set multipart saat body = FormData
-      const r = await api.patch(`/news/${id}`, form);
-      return r.data;
+    mutationFn: async ({ id, form, json }: UpdateNewsInput) => {
+      // 1) Jika ada file baru → kirim FormData (JANGAN set Content-Type manual)
+      if (form) {
+        const r = await api.patch(`/news/${id}`, form, {
+          // pastikan interceptor kamu tidak memaksa 'application/json'
+          headers: { /* 'Content-Type' biarkan undefined */ },
+        });
+        return r.data;
+      }
+
+      // 2) Kalau tidak ganti gambar → kirim JSON biasa (lebih ringan)
+      if (json) {
+        const r = await api.patch(`/news/${id}`, json, {
+          headers: { "Content-Type": "application/json" },
+        });
+        return r.data;
+      }
+
+      throw new Error("Payload update tidak valid");
     },
   });
 }

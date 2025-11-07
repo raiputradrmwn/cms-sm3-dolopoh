@@ -1,8 +1,8 @@
-
 "use client";
 
 import * as React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
@@ -33,13 +33,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     { title: "Pendaftaran", url: "/dashboard/pendaftaran", icon: ClipboardList },
   ];
 
+  // Hanya aktif jika:
+  // - Untuk "/dashboard" => exact match
+  // - Untuk selain itu     => exact match ATAU prefix "/"
+  const isActive = (current: string, target: string) => {
+    if (target === "/dashboard") return current === "/dashboard";
+    return current === target || current.startsWith(target + "/");
+  };
+
   async function handleLogout() {
     try {
       setLoading(true);
       Cookies.remove("token");
       toast.success("Berhasil keluar");
-      router.replace("/"); 
-    } catch (e) {
+      router.replace("/");
+    } catch {
       toast.error("Gagal logout, coba lagi.");
     } finally {
       setLoading(false);
@@ -64,12 +72,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenu>
               {menu.map((item) => {
                 const Icon = item.icon;
-                const active =
-                  pathname === item.url || pathname.startsWith(item.url + "/");
+                const active = isActive(pathname, item.url);
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild isActive={active}>
-                      <a
+                      <Link
                         href={item.url}
                         className={cn(
                           "flex items-center gap-3 text-base py-2 rounded-lg transition-colors",
@@ -80,7 +87,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       >
                         <Icon className="h-5 w-5 shrink-0" />
                         {item.title}
-                      </a>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
@@ -90,7 +97,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
 
-      {/* Profil pengguna + Logout */}
       <div className="mt-auto border-t p-4 flex items-center gap-3">
         <Image
           src="/photos/man.png"
