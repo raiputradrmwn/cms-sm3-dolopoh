@@ -63,7 +63,7 @@ export async function PATCH(req: NextRequest, ctx: { params: { id: string } }) {
     for (const [k, v] of inFd.entries()) {
       // Jika value kosong, lewati saja
       if (v === null || v === undefined || v === "") continue;
-      fd.append(k, v as any);
+      fd.append(k, v as File | string);
     }
 
     const r = await fetch(`${API_BASE}/news/${id}`, {
