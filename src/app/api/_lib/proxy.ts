@@ -1,18 +1,22 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 const API_BASE = process.env.API_BASE_URL;
 
 type Opts = {
-  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE"; 
+  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   forwardQuery?: boolean;
 };
 type GetOpts = {
-  forwardQuery?: boolean; 
+  forwardQuery?: boolean;
 };
 
 export async function proxyJson(path: string, req: Request, opts: Opts = {}) {
   if (!API_BASE) {
-    return NextResponse.json({ message: "API_BASE_URL belum di-set" }, { status: 500 });
+    return NextResponse.json(
+      { message: "API_BASE_URL belum di-set" },
+      { status: 500 }
+    );
   }
 
   const method = opts.method ?? "POST";
@@ -32,8 +36,12 @@ export async function proxyJson(path: string, req: Request, opts: Opts = {}) {
   });
 
   const text = await upstream.text();
-  let data
-  try { data = text ? JSON.parse(text) : null; } catch { data = { raw: text }; }
+  let data;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    data = { raw: text };
+  }
 
   if (!upstream.ok) {
     return NextResponse.json(
@@ -45,17 +53,23 @@ export async function proxyJson(path: string, req: Request, opts: Opts = {}) {
   return NextResponse.json(data, { status: 200 });
 }
 
-export async function proxyGetJson(path: string, req: Request, opts: GetOpts = {}) {
+export async function proxyGetJson(
+  path: string,
+  req: Request,
+  opts: GetOpts = {}
+) {
   if (!API_BASE) {
-    return NextResponse.json({ message: "API_BASE_URL belum di-set" }, { status: 500 });
+    return NextResponse.json(
+      { message: "API_BASE_URL belum di-set" },
+      { status: 500 }
+    );
   }
 
   const src = new URL(req.url);
   const target = new URL(API_BASE + path);
   if (opts.forwardQuery) target.search = src.search;
-
-  const auth = req.headers.get("authorization") || undefined; // <-- forward Bearer token
-
+  const token = (await cookies()).get("token")?.value;
+  const auth = "Bearer " + token;
   const upstream = await fetch(target.toString(), {
     method: "GET",
     headers: {
@@ -66,8 +80,12 @@ export async function proxyGetJson(path: string, req: Request, opts: GetOpts = {
   });
 
   const text = await upstream.text();
-  let data
-  try { data = text ? JSON.parse(text) : null; } catch { data = { raw: text }; }
+  let data;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    data = { raw: text };
+  }
 
   if (!upstream.ok) {
     return NextResponse.json(
