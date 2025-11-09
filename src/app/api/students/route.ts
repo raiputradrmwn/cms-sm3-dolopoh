@@ -1,4 +1,4 @@
-// src/app/api/students/route.ts
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
@@ -7,13 +7,12 @@ export async function GET(req: Request) {
     return NextResponse.json({ message: "API_BASE_URL belum di-set" }, { status: 500 });
   }
 
-  // teruskan query ?page & ?limit dari FE
   const src = new URL(req.url);
   const target = new URL(base + "/students");
   target.search = src.search;
 
-  // forward Authorization (Bearer dari axios interceptor)
-  const auth = req.headers.get("authorization") || undefined;
+  const token = (await cookies()).get("token")?.value;
+  const auth = 'Bearer ' + token;
 
   const upstream = await fetch(target.toString(), {
     method: "GET",

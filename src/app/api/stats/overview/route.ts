@@ -1,7 +1,9 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
-  const auth = req.headers.get("authorization") || undefined;
+export async function GET() {
+  const token = (await cookies()).get("token")?.value;
+  const auth = 'Bearer ' + token;
   const base = process.env.API_BASE_URL!;
   const headers: HeadersInit = {
     "Content-Type": "application/json",
