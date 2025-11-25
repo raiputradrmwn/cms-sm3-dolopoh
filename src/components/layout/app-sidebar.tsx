@@ -59,7 +59,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <div className="flex items-center gap-3 font-semibold text-lg px-3">
           <div className="h-10 w-10 rounded-xl grid place-items-center text-primary font-bold">
-            <Image src="/images/logo.png" alt="Logo" width={32} height={32} />
+            <Image src="/images/logo.jpg" alt="Logo" width={32} height={32} />
           </div>
           <span>SMK 3 Dolopo</span>
         </div>

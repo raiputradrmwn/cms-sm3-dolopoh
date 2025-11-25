@@ -37,7 +37,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
           <div className="mx-auto flex w-full max-w-sm items-center gap-3">
             <div className="relative h-10 w-10 overflow-hidden rounded-xl border border-white/20 bg-white/10">
                 <Image
-                  src="/images/logo.png"
+                  src="/images/logo.jpg"
                   alt="Logo SMK 3 Dolopo"
                   fill
                   sizes="40px"
