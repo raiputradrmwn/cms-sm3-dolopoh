@@ -1,4 +1,3 @@
-// src/app/dashboard/berita/page.tsx
 "use client";
 
 import * as React from "react";
@@ -18,7 +17,7 @@ export default function NewsListPage() {
   const { data: items = [], isFetching } = useRecentPublishedNews({ page: 1, limit: 10 });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-xl font-semibold tracking-tight">Berita Terbit</h1>
         <Button asChild>
@@ -35,11 +34,11 @@ export default function NewsListPage() {
         </CardHeader>
         <CardContent>
           <div className="rounded-lg border shadow-sm overflow-hidden">
-            <Table className="text-sm">
+            <Table className="text-sm table-fixed">
               <TableHeader className="bg-background">
                 <TableRow>
-                  <TableHead className="min-w-[280px]">Judul</TableHead>
-                  <TableHead className="w-[360px]">Headline</TableHead>
+                  <TableHead className="w-auto">Judul</TableHead>
+                  <TableHead className="w-1/3">Headline</TableHead>
                   <TableHead className="w-[200px] text-center">Terakhir Diubah</TableHead>
                 </TableRow>
               </TableHeader>
@@ -81,7 +80,7 @@ export default function NewsListPage() {
                     </TableCell>
                     <TableCell className="p-4">
                       <span className="block truncate text-muted-foreground" title={n.headline}>
-                        {n.headline}
+                        <div dangerouslySetInnerHTML={{ __html: n.headline }} />
                       </span>
                     </TableCell>
                     <TableCell className="text-center p-4 text-muted-foreground">
