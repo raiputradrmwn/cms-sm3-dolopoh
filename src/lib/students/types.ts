@@ -7,6 +7,7 @@ export type ApiMeta = {
 
 export type Student = {
   id: string;
+  regNo: string;
   name: string;
   gender: string;
   place_of_birth: string;

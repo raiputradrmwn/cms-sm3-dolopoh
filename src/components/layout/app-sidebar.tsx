@@ -18,7 +18,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Home, Newspaper, ClipboardList, LogOut } from "lucide-react";
+import { Home, Newspaper, ClipboardList, LogOut, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -31,6 +31,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     { title: "Beranda", url: "/dashboard", icon: Home },
     { title: "Berita", url: "/dashboard/berita", icon: Newspaper },
     { title: "Pendaftaran", url: "/dashboard/pendaftaran", icon: ClipboardList },
+    { title: "Karir", url: "/dashboard/careers", icon: Briefcase },
   ];
 
   // Hanya aktif jika:

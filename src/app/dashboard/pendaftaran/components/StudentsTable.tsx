@@ -44,7 +44,7 @@ export default function StudentsTable({ items, loading }: Props) {
                   className="font-medium hover:underline inline-flex items-center gap-2"
                 >
                   <IdCard className="h-4 w-4 text-primary" />
-                  {s.id}
+                  {s.regNo}
                 </Link>
               </TableCell>
               <TableCell className="p-4">
