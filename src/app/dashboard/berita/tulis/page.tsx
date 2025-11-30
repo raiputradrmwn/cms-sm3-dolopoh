@@ -114,7 +114,7 @@ export default function NewsCreatePage() {
               </Button>
             </div>
             {photoPreview && (
-              <div className="mt-3 rounded-lg border bg-muted/20">
+              <div className="mt-3 rounded-lg border bg-muted/20 w-full max-w-md">
                 {/* Canvas gambar proporsional */}
                 <AspectRatio ratio={16 / 9}>
                   <img

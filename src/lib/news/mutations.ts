@@ -57,14 +57,16 @@ export type UpdateNewsInput =
       form?: never;
       json: { title?: string; status?: NewsStatus; content?: string }; // tidak ganti foto → JSON
     };
+
 export function useUpdateNews() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, form, json }: UpdateNewsInput) => {
       // 1) Jika ada file baru → kirim FormData (JANGAN set Content-Type manual)
       if (form) {
         const r = await api.patch(`/news/${id}`, form, {
-          // pastikan interceptor kamu tidak memaksa 'application/json'
-          headers: { /* 'Content-Type' biarkan undefined */ },
+          // Override default application/json to let browser set multipart/form-data with boundary
+          headers: { "Content-Type": undefined } as any,
         });
         return r.data;
       }
@@ -78,6 +80,9 @@ export function useUpdateNews() {
       }
 
       throw new Error("Payload update tidak valid");
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["news"] });
     },
   });
 }

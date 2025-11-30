@@ -15,10 +15,12 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import NewsEditor from "@/app/dashboard/berita/components/Editor"; // Reusing Editor
 import { useCareerDetail } from "@/lib/careers/queries";
 import api from "@/lib/api/axios";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function CareerEditPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { data: detail, isFetching } = useCareerDetail(id);
 
@@ -86,8 +88,10 @@ export default function CareerEditPage() {
         
         // Axios automatically sets Content-Type to multipart/form-data when body is FormData
         // But we are using api instance which might have default headers.
-        // Let's use api.patch
-        await api.patch(`/careers/${id}`, fd);
+        // Let's use api.patch and override Content-Type to undefined
+        await api.patch(`/careers/${id}`, fd, {
+          headers: { "Content-Type": undefined } as any,
+        });
       } else {
         // Use JSON if photo is not updated
         await api.patch(`/careers/${id}`, {
@@ -101,6 +105,8 @@ export default function CareerEditPage() {
       }
 
       toast.success("Karir berhasil diperbarui");
+      // Invalidate cache to show updates immediately
+      queryClient.invalidateQueries({ queryKey: ["careers"] });
       router.push("/dashboard/careers");
     } catch (error) {
       console.error(error);
@@ -180,14 +186,7 @@ export default function CareerEditPage() {
                   />
                 </AspectRatio>
                 <div className="p-2 text-right">
-                    {/* Only show remove if it's a new file, or maybe we want to allow removing existing photo? 
-                        API might support sending null for photo to delete it? 
-                        The types say photo?: string | null. 
-                        For now, I'll just allow replacing. Removing existing photo usually requires a specific flag or sending null.
-                        I'll assume if they clear it, they want to remove it. But my onSubmit logic sends FormData if photo is set.
-                        If photo is null, it sends JSON without photo field. So it won't remove existing photo.
-                        To remove, I'd need to handle that. I'll stick to replacing for now as per "persis dengan yang sudah aja" usually implies basic CRUD.
-                    */}
+
                    <Button
                       type="button"
                       variant="ghost"
@@ -195,11 +194,6 @@ export default function CareerEditPage() {
                       className="h-7 px-2 text-destructive hover:text-destructive"
                       onClick={() => {
                         setPhoto(null);
-                        // If it was existing photo (url), we might want to keep showing it or show placeholder?
-                        // If I set preview to null, it disappears.
-                        // If I want to support "Delete Photo", I need to send something to backend.
-                        // For now, let's just allow clearing the *new* selection, reverting to original if any?
-                        // Or just clear preview.
                         setPhotoPreview(null); 
                       }}
                     >

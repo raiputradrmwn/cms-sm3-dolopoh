@@ -50,8 +50,8 @@ export default function NewsEditPage() {
   const [title, setTitle] = React.useState("");
   const [status, setStatus] = React.useState<NewsStatus>("DRAFT");
   const [content, setContent] = React.useState<string>("");
-  const [coverFile, setCoverFile] = React.useState<File | null>(null); 
-  const [coverPreview, setCoverPreview] = React.useState<string | null>(null); 
+  const [coverFile, setCoverFile] = React.useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = React.useState<string | null>(null);
   const [fit, setFit] = React.useState<"cover" | "contain">("cover");
   const [openPreview, setOpenPreview] = React.useState(false);
 
@@ -60,12 +60,12 @@ export default function NewsEditPage() {
     setTitle(detail.title || "");
     setStatus(detail.status || "DRAFT");
     setContent(detail.content || "");
-    
+
     setCoverPreview(detail.photo || null);
-    
+
   }, [detail]);
 
-  
+
   React.useEffect(() => {
     return () => {
       if (coverPreview?.startsWith("blob:")) {
@@ -78,15 +78,15 @@ export default function NewsEditPage() {
     const f = e.target.files?.[0];
     if (!f) return;
     setCoverFile(f);
-    
+
     const url = URL.createObjectURL(f);
     setCoverPreview(url);
     e.target.value = "";
   };
 
   const onRemoveCover = () => {
-    
-    
+
+
     if (coverPreview?.startsWith("blob:")) URL.revokeObjectURL(coverPreview);
     setCoverFile(null);
     setCoverPreview(null);
@@ -175,7 +175,7 @@ export default function NewsEditPage() {
             </div>
 
             {coverPreview && (
-              <div className="mt-3 rounded-lg border bg-muted/20">
+              <div className="mt-3 rounded-lg border bg-muted/20 w-full max-w-md">
                 <AspectRatio ratio={16 / 9}>
                   <img
                     src={coverPreview}
