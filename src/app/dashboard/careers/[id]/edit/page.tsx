@@ -30,7 +30,7 @@ export default function CareerEditPage() {
   const [location, setLocation] = React.useState("");
   const [benefits, setBenefits] = React.useState("");
   const [deadline, setDeadline] = React.useState("");
-  
+
   const [photo, setPhoto] = React.useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = React.useState<string | null>(null);
   const [submitting, setSubmitting] = React.useState(false);
@@ -42,7 +42,7 @@ export default function CareerEditPage() {
     setJobDescription(detail.job_description || "");
     setLocation(detail.location || "");
     setBenefits(detail.benefits || "");
-    
+
     // Format deadline for input type="date" (YYYY-MM-DD)
     if (detail.deadline) {
       const d = new Date(detail.deadline);
@@ -85,22 +85,22 @@ export default function CareerEditPage() {
         fd.append("benefits", benefits);
         fd.append("deadline", deadline);
         fd.append("photo", photo);
-        
+
         // Axios automatically sets Content-Type to multipart/form-data when body is FormData
         // But we are using api instance which might have default headers.
         // Let's use api.patch and override Content-Type to undefined
         await api.patch(`/careers/${id}`, fd, {
-          headers: { "Content-Type": undefined } as any,
+          headers: { "Content-Type": "multipart/form-data" },
         });
       } else {
         // Use JSON if photo is not updated
         await api.patch(`/careers/${id}`, {
-            title,
-            job_description: jobDescription,
-            requirements,
-            location,
-            benefits,
-            deadline,
+          title,
+          job_description: jobDescription,
+          requirements,
+          location,
+          benefits,
+          deadline,
         });
       }
 
@@ -187,18 +187,18 @@ export default function CareerEditPage() {
                 </AspectRatio>
                 <div className="p-2 text-right">
 
-                   <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="h-7 px-2 text-destructive hover:text-destructive"
-                      onClick={() => {
-                        setPhoto(null);
-                        setPhotoPreview(null); 
-                      }}
-                    >
-                      Hapus Preview
-                    </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 px-2 text-destructive hover:text-destructive"
+                    onClick={() => {
+                      setPhoto(null);
+                      setPhotoPreview(null);
+                    }}
+                  >
+                    Hapus Preview
+                  </Button>
                 </div>
               </div>
             )}

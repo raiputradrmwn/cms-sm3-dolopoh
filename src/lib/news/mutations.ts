@@ -51,7 +51,7 @@ export function useCreateNewsMutation() {
 }
 export type NewsStatus = "PUBLISHED" | "DRAFT";
 export type UpdateNewsInput =
-  | { id: string; form: FormData; json?: never } // ganti foto → kirim FormData
+  | { id: string; form: FormData; json?: never }
   | {
       id: string;
       form?: never;
@@ -66,7 +66,7 @@ export function useUpdateNews() {
       if (form) {
         const r = await api.patch(`/news/${id}`, form, {
           // Override default application/json to let browser set multipart/form-data with boundary
-          headers: { "Content-Type": undefined } as any,
+          headers: { "Content-Type": "multipart/form-data" },
         });
         return r.data;
       }

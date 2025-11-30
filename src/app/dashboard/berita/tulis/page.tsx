@@ -128,8 +128,6 @@ export default function NewsCreatePage() {
                     )}
                   />
                 </AspectRatio>
-
-                {/* Toolbar */}
                 <div className="flex items-center justify-between p-2 text-xs text-muted-foreground">
                   <span>Pratinjau Sampul (16:9)</span>
                   <div className="flex items-center gap-1">
