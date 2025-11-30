@@ -6,8 +6,8 @@ import { poppins } from "@/style/font";
 import QueryProvider from "./provider";
 
 export const metadata: Metadata = {
-  title: "CMS SMK Dolopoh",
-  description: "CMS SMK Dolopoh",
+  title: "CMS SMK Dolopo",
+  description: "CMS SMK Dolopo",
 };
 
 export default function RootLayout({

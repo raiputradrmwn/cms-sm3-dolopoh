@@ -14,23 +14,40 @@ import StudentsTable from "./components/StudentsTable";
 
 export default function PendaftaranPage() {
   const [page, setPage] = React.useState(1);
-  const [limit] = React.useState(10);
+  const [limit] = React.useState(1000); // Fetch all (or large chunk) for client-side filtering
   const [search, setSearch] = React.useState("");
+  const [debouncedSearch, setDebouncedSearch] = React.useState("");
   const [major, setMajor] = React.useState<string | undefined>(undefined);
+
+  // Debounce search input
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [search]);
 
   const params = new URLSearchParams();
   params.set("page", String(page));
   params.set("limit", String(limit));
-  if (search.trim()) params.set("search", search.trim());
-  if (major && major !== "ALL") params.set("major", major);
+  // Removed search and major from API params to handle on client side
 
   const { data, isFetching } = useApiQuery<StudentsListResponse>(
-    ["students", "list", page, limit, search],
+    ["students", "list", page, limit], // Removed search and major from query key
     `/students?${params.toString()}`
   );
 
-  const rows: Student[] = data?.data?.data ?? [];
+  const rawRows: Student[] = data?.data?.data ?? [];
   const pg = data?.data?.pagination;
+
+  // Client-side filtering
+  const filteredRows = React.useMemo(() => {
+    return rawRows.filter((student) => {
+      const matchesSearch = student.name.toLowerCase().includes(debouncedSearch.toLowerCase());
+      const matchesMajor = major && major !== "ALL" ? student.major === major : true;
+      return matchesSearch && matchesMajor;
+    });
+  }, [rawRows, debouncedSearch, major]);
 
   return (
     <div className="space-y-4">
@@ -48,7 +65,7 @@ export default function PendaftaranPage() {
         onChange={(v) => {
           setSearch(v.search);
           setMajor(v.major === "ALL" ? undefined : v.major);
-          setPage(1);
+          // setPage(1); // No need to reset server page if we fetch all
         }}
       />
 
@@ -57,15 +74,17 @@ export default function PendaftaranPage() {
         <CardHeader className="flex-row items-center justify-between">
           <CardTitle>Daftar Pendaftar</CardTitle>
           <div className="text-sm text-muted-foreground">
-            {isFetching ? "Memuat…" : `${pg?.itemCount ?? rows.length} data`}
+            {isFetching ? "Memuat…" : `${filteredRows.length} data`}
           </div>
         </CardHeader>
         <CardContent>
-          <StudentsTable items={rows} loading={isFetching} />
+          <StudentsTable items={filteredRows} loading={isFetching} />
         </CardContent>
       </Card>
 
-      {/* Pagination */}
+      {/* Pagination (Hidden or Disabled since we fetch all) */}
+      {/* We can keep it if we want to support server-side paging for >1000 items, 
+          but for now let's hide it or keep it as is (it will likely show Page 1 of 1) */}
       <div className="flex items-center justify-end gap-2">
         <Button
           variant="outline"
