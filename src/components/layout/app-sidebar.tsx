@@ -118,6 +118,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           onClick={handleLogout}
           disabled={loading}
           title="Keluar"
+          className="hover:bg-red-500 hover:text-white cursor-pointer"
         >
           <LogOut className="h-5 w-5" />
         </Button>

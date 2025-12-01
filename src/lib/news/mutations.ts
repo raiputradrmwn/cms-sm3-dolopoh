@@ -62,10 +62,8 @@ export function useUpdateNews() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, form, json }: UpdateNewsInput) => {
-      // 1) Jika ada file baru → kirim FormData (JANGAN set Content-Type manual)
       if (form) {
         const r = await api.patch(`/news/${id}`, form, {
-          // Override default application/json to let browser set multipart/form-data with boundary
           headers: { "Content-Type": "multipart/form-data" },
         });
         return r.data;
