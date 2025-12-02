@@ -60,6 +60,7 @@ export type RegistrationItem = {
   status: RegistrationStatus;
   createdAt: string;
   updatedAt: string;
+  fromSchool: string;
 };
 
 export type StudentDetailResponse = {
