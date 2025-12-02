@@ -7,14 +7,38 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Newspaper } from "lucide-react";
+import { PlusCircle, Newspaper, Edit, Trash2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRecentPublishedNews } from "@/lib/news/queries";
 import type { NewsRow } from "@/lib/news/types";
+import { toast } from "sonner";
+import api from "@/lib/api/axios";
 
 export default function NewsListPage() {
   // ambil berita terbit (published) page=1 limit=10
-  const { data: items = [], isFetching } = useRecentPublishedNews({ page: 1, limit: 10 });
+  const { data: items = [], isFetching, refetch } = useRecentPublishedNews({ page: 1, limit: 10 });
+
+  const handleDelete = (id: string) => {
+    toast("Apakah Anda yakin ingin menghapus berita ini?", {
+      action: {
+        label: "Hapus",
+        onClick: async () => {
+          try {
+            await api.delete(`/news/${id}`);
+            toast.success("Berita berhasil dihapus");
+            refetch();
+          } catch (error) {
+            console.error(error);
+            toast.error("Gagal menghapus berita");
+          }
+        },
+      },
+      cancel: {
+        label: "Batal",
+        onClick: () => { },
+      },
+    });
+  };
 
   return (
     <div className="space-y-4 w-full">
@@ -40,6 +64,7 @@ export default function NewsListPage() {
                   <TableHead className="w-auto">Judul</TableHead>
                   <TableHead className="w-1/3">Headline</TableHead>
                   <TableHead className="w-[200px] text-center">Terakhir Diubah</TableHead>
+                  <TableHead className="w-[120px] text-center">Aksi</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -85,6 +110,28 @@ export default function NewsListPage() {
                     </TableCell>
                     <TableCell className="text-center p-4 text-muted-foreground">
                       {new Date(n.updatedAt).toLocaleString()}
+                    </TableCell>
+                    <TableCell className="text-center p-4">
+                      <div className="flex items-center justify-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          asChild
+                          className="h-8 w-8 text-muted-foreground hover:text-primary"
+                        >
+                          <Link href={`/dashboard/berita/${n.id}/edit`}>
+                            <Edit className="h-4 w-4" />
+                          </Link>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDelete(n.id)}
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

@@ -76,3 +76,19 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   });
   return relay(r);
 }
+
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  if (!id) return NextResponse.json({ message: "Missing id" }, { status: 400 });
+
+  const auth = getAuthHeader(req);
+  const r = await fetch(`${API_BASE}/news/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      ...(auth ? { Authorization: auth } : {}),
+    },
+    cache: "no-store",
+  });
+  return relay(r);
+}

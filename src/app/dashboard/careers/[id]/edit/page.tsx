@@ -57,6 +57,11 @@ export default function CareerEditPage() {
 
   const onPickCover = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0] ?? null;
+    if (f && f.size > 2 * 1024 * 1024) {
+      toast.error("Ukuran gambar maksimal 2MB");
+      e.target.value = "";
+      return;
+    }
     setPhoto(f);
     setPhotoPreview(f ? URL.createObjectURL(f) : null);
     e.target.value = "";

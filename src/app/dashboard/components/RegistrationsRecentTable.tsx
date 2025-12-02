@@ -44,8 +44,9 @@ export function RegistrationsRecentTable() {
           <Table className="text-sm">
             <TableHeader className="sticky top-0 bg-background">
               <TableRow className="hover:bg-transparent">
-                <TableHead className="w-[170px]">No Daftar</TableHead>
+                <TableHead className="w-[50px]">No</TableHead>
                 <TableHead className="min-w-[220px]">Nama</TableHead>
+                <TableHead className="w-[180px]">Asal Sekolah</TableHead>
                 <TableHead className="w-[160px] text-center">Jurusan</TableHead>
                 <TableHead className="w-[220px] text-center">Didaftarkan</TableHead>
               </TableRow>
@@ -70,27 +71,28 @@ export function RegistrationsRecentTable() {
                   </TableRow>
                 ))}
 
-              {items.map((r) => (
+              {items.map((r, index) => (
                 <TableRow
                   key={r.id}
                   className="odd:bg-background even:bg-muted/30 hover:bg-secondary/50 transition-colors"
                 >
+                  <TableCell className="p-4 font-medium">
+                    {index + 1}
+                  </TableCell>
+
                   <TableCell className="p-4">
                     <Link
                       href="/dashboard/pendaftaran"
-                      className="font-medium hover:underline inline-flex items-center gap-2"
-                      title={`Kelola ${r.regNo}`}
+                      className="inline-flex items-center gap-2 truncate font-medium hover:underline"
+                      title={`Kelola ${r.name}`}
                     >
-                      <IdCard className="h-4 w-4 text-primary" />
-                      {r.regNo}
+                      <User className="h-4 w-4 text-primary/70" />
+                      <span className="truncate">{r.name}</span>
                     </Link>
                   </TableCell>
 
                   <TableCell className="p-4">
-                    <div className="inline-flex items-center gap-2 truncate">
-                      <User className="h-4 w-4 text-primary/70" />
-                      <span className="truncate">{r.name}</span>
-                    </div>
+                    <span className="truncate text-muted-foreground">{r.fromSchool}</span>
                   </TableCell>
 
                   <TableCell className="text-center p-4">

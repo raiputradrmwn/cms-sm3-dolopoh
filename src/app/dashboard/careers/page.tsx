@@ -23,16 +23,26 @@ export default function CareersListPage() {
   const { data: envelope, isFetching, refetch } = useCareers({ page: 1, limit: 10 });
   const items = envelope?.data || [];
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Apakah Anda yakin ingin menghapus karir ini?")) return;
-    try {
-      await api.delete(`/careers/${id}`);
-      toast.success("Karir berhasil dihapus");
-      refetch();
-    } catch (error) {
-      console.error(error);
-      toast.error("Gagal menghapus karir");
-    }
+  const handleDelete = (id: string) => {
+    toast("Apakah Anda yakin ingin menghapus karir ini?", {
+      action: {
+        label: "Hapus",
+        onClick: async () => {
+          try {
+            await api.delete(`/careers/${id}`);
+            toast.success("Karir berhasil dihapus");
+            refetch();
+          } catch (error) {
+            console.error(error);
+            toast.error("Gagal menghapus karir");
+          }
+        },
+      },
+      cancel: {
+        label: "Batal",
+        onClick: () => { },
+      },
+    });
   };
 
   return (

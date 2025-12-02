@@ -35,6 +35,11 @@ export default function CareerCreatePage() {
 
   const onPickCover = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0] ?? null;
+    if (f && f.size > 2 * 1024 * 1024) {
+      toast.error("Ukuran gambar maksimal 2MB");
+      e.target.value = "";
+      return;
+    }
     setPhoto(f);
     setPhotoPreview(f ? URL.createObjectURL(f) : null);
     e.target.value = "";
@@ -44,10 +49,10 @@ export default function CareerCreatePage() {
     if (!title.trim()) return toast.error("Judul wajib diisi");
     if (!location.trim()) return toast.error("Lokasi wajib diisi");
     if (!deadline) return toast.error("Deadline wajib diisi");
-    
+
     // Simple validation for rich text fields (check if empty)
     const isHtmlEmpty = (html: string) => !html || html.replace(/<[^>]*>/g, "").trim().length === 0;
-    
+
     if (isHtmlEmpty(jobDescription)) return toast.error("Deskripsi Pekerjaan wajib diisi");
     if (isHtmlEmpty(requirements)) return toast.error("Persyaratan wajib diisi");
     if (isHtmlEmpty(benefits)) return toast.error("Benefit wajib diisi");
@@ -148,18 +153,18 @@ export default function CareerCreatePage() {
                   />
                 </AspectRatio>
                 <div className="p-2 text-right">
-                   <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="h-7 px-2 text-destructive hover:text-destructive"
-                      onClick={() => {
-                        setPhoto(null);
-                        setPhotoPreview(null);
-                      }}
-                    >
-                      Hapus
-                    </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 px-2 text-destructive hover:text-destructive"
+                    onClick={() => {
+                      setPhoto(null);
+                      setPhotoPreview(null);
+                    }}
+                  >
+                    Hapus
+                  </Button>
                 </div>
               </div>
             )}

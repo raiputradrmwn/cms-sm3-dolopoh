@@ -8,9 +8,10 @@ export function toRegNo(id: string) {
 export function mapStudentsToRows(list: Student[]): RegistrationItem[] {
   return list.map((s) => ({
     id: s.id,
-    regNo: toRegNo(s.id),
+    regNo: s.regNo,
     name: s.name,
     major: s.major,
+    fromSchool: s.from_school,
     status: "BARU",     // fallback sampai backend punya field status
     createdAt: s.created_at,
     updatedAt: s.updated_at,

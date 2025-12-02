@@ -77,6 +77,11 @@ export default function NewsEditPage() {
   const onPickCover = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     if (!f) return;
+    if (f.size > 2 * 1024 * 1024) {
+      toast.error("Ukuran gambar maksimal 2MB");
+      e.target.value = "";
+      return;
+    }
     setCoverFile(f);
 
     const url = URL.createObjectURL(f);
