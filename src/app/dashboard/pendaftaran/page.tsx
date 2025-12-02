@@ -42,10 +42,15 @@ export default function PendaftaranPage() {
 
   // Client-side filtering
   const filteredRows = React.useMemo(() => {
-    return rawRows.filter((student) => {
+    const filtered = rawRows.filter((student) => {
       const matchesSearch = student.name.toLowerCase().includes(debouncedSearch.toLowerCase());
       const matchesMajor = major && major !== "ALL" ? student.major === major : true;
       return matchesSearch && matchesMajor;
+    });
+
+    // Sort by created_at desc (Newest First)
+    return filtered.sort((a, b) => {
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
   }, [rawRows, debouncedSearch, major]);
 

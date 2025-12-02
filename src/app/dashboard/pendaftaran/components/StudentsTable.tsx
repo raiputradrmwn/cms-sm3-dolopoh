@@ -7,72 +7,24 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Student } from "@/lib/students/types";
-import { Button } from "@/components/ui/button";
-import { IdCard, User, CalendarDays, GraduationCap, ArrowUpDown } from "lucide-react";
+import { User, CalendarDays } from "lucide-react";
 
 type Props = {
   items: Student[];
   loading?: boolean;
 };
 
-type SortConfig = {
-  key: keyof Student | "created_at";
-  direction: "asc" | "desc";
-};
-
 export default function StudentsTable({ items, loading }: Props) {
-  const [sortConfig, setSortConfig] = React.useState<SortConfig>({ key: "created_at", direction: "desc" });
-
-  const sortedItems = React.useMemo(() => {
-    const sorted = [...items];
-    sorted.sort((a, b) => {
-      const aValue = a[sortConfig.key];
-      const bValue = b[sortConfig.key];
-
-      if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
-      if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
-      return 0;
-    });
-    return sorted;
-  }, [items, sortConfig]);
-
-  const handleSort = (key: keyof Student) => {
-    setSortConfig((current) => ({
-      key,
-      direction: current.key === key && current.direction === "asc" ? "desc" : "asc",
-    }));
-  };
-
   return (
     <div className="rounded-lg border shadow-sm overflow-hidden">
       <Table className="text-sm">
         <TableHeader className="bg-background">
           <TableRow>
             <TableHead className="w-[50px]">No</TableHead>
-            <TableHead className="min-w-[220px]">
-              <Button variant="ghost" size="sm" className="-ml-3 h-8 data-[state=open]:bg-accent" onClick={() => handleSort("name")}>
-                Nama
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-              </Button>
-            </TableHead>
-            <TableHead className="w-[180px]">
-              <Button variant="ghost" size="sm" className="-ml-3 h-8 data-[state=open]:bg-accent" onClick={() => handleSort("from_school")}>
-                Asal Sekolah
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-              </Button>
-            </TableHead>
-            <TableHead className="w-[160px] text-center">
-              <Button variant="ghost" size="sm" className="-ml-3 h-8 data-[state=open]:bg-accent" onClick={() => handleSort("major")}>
-                Jurusan
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-              </Button>
-            </TableHead>
-            <TableHead className="w-[200px] text-center">
-              <Button variant="ghost" size="sm" className="-ml-3 h-8 data-[state=open]:bg-accent" onClick={() => handleSort("created_at")}>
-                Tanggal Daftar
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-              </Button>
-            </TableHead>
+            <TableHead className="min-w-[220px]">Nama</TableHead>
+            <TableHead className="w-[180px]">Asal Sekolah</TableHead>
+            <TableHead className="w-[160px] text-center">Jurusan</TableHead>
+            <TableHead className="w-[200px] text-center">Tanggal Daftar</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -85,7 +37,7 @@ export default function StudentsTable({ items, loading }: Props) {
             </TableRow>
           ))}
 
-          {sortedItems.map((s, index) => (
+          {items.map((s, index) => (
             <TableRow key={s.id} className="hover:bg-secondary/50">
               <TableCell className="p-4 font-medium">
                 {index + 1}
