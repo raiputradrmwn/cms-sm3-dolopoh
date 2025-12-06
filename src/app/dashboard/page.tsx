@@ -7,7 +7,12 @@ import { RegistrationsRecentTable } from "./components/RegistrationsRecentTable"
 import { StatsCardsContainer } from "./components/StatsCardContainer";
 import RegistrationsSummaryContainer from "./components/RegistrationsSummaryContainer";
 
+import Cookies from "js-cookie";
+
 export default function Page() {
+  const role = Cookies.get("role");
+  const isSuperAdmin = role === "SUPER_ADMIN";
+
   return (
     <main className="p-4">
       <div className="mx-auto w-full h-full space-y-8">
@@ -31,8 +36,8 @@ export default function Page() {
                 Dashboard SMK 3 Dolopo
               </h1>
               <p className="text-sm text-muted-foreground">
-                Ikhtisar singkat berita & pendaftaran siswa. Kelola konten dan
-                verifikasi pendaftar di satu tempat.
+                Ikhtisar singkat berita {isSuperAdmin && "& pendaftaran siswa"}. Kelola konten
+                {isSuperAdmin && " dan verifikasi pendaftar"} di satu tempat.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">{/* ruang aksi cepat */}</div>
@@ -50,10 +55,10 @@ export default function Page() {
         <section className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
             <NewsRecentTable />
-            <RegistrationsRecentTable />
+            {isSuperAdmin && <RegistrationsRecentTable />}
           </div>
           <div className="space-y-6">
-            <RegistrationsSummaryContainer />
+            {isSuperAdmin && <RegistrationsSummaryContainer />}
           </div>
         </section>
       </div>

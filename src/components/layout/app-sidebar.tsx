@@ -18,7 +18,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Home, Newspaper, ClipboardList, LogOut, Briefcase } from "lucide-react";
+import { Home, Newspaper, ClipboardList, LogOut, Briefcase, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -26,13 +26,33 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
+  const [role, setRole] = React.useState<string | null>(null);
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setRole(Cookies.get("role") || null);
+    setMounted(true);
+  }, []);
+
+  const name = Cookies.get("name");
+  const email = Cookies.get("email");
 
   const menu = [
     { title: "Beranda", url: "/dashboard", icon: Home },
     { title: "Berita", url: "/dashboard/berita", icon: Newspaper },
     { title: "Pendaftaran", url: "/dashboard/pendaftaran", icon: ClipboardList },
     { title: "Karir", url: "/dashboard/careers", icon: Briefcase },
-  ];
+    { title: "Manajemen Admin", url: "/dashboard/admins", icon: ShieldAlert },
+  ].filter((item) => {
+    if (!mounted) return true; // Render all or none? Better to mimic server or allow generic. 
+    // Actually simpler: render safe default (e.g. NO restricted items) on server/first render
+    // OR render valid menu based on "mounted".
+
+    if (item.title === "Pendaftaran" || item.title === "Manajemen Admin") {
+      return mounted && role === "SUPER_ADMIN";
+    }
+    return true;
+  });
 
   // Hanya aktif jika:
   // - Untuk "/dashboard" => exact match
@@ -46,6 +66,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     try {
       setLoading(true);
       Cookies.remove("token");
+      Cookies.remove("role");
+      Cookies.remove("name");
+      Cookies.remove("email");
       toast.success("Berhasil keluar");
       router.replace("/");
     } catch {
@@ -107,9 +130,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           className="rounded-full border"
         />
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium truncate">Admin Dolopo</p>
+          <p className="text-sm font-medium truncate">{mounted ? (name || "Admin") : "..."}</p>
           <p className="text-xs text-muted-foreground truncate">
-            admin@smk3dolopo.sch.id
+            {mounted ? (email || "admin@sekolah.sch.id") : "..."}
           </p>
         </div>
         <Button

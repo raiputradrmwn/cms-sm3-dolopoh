@@ -17,7 +17,10 @@ export async function loginRequest(payload: LoginPayload): Promise<LoginResponse
   }
 
   const token = raw.data?.token;
+  const role = raw.data?.role;
+  const name = raw.data?.name;
+  const email = raw.data?.email;
   if (!token) throw new Error("Token tidak ditemukan");
 
-  return { token };
+  return { token, role, name, email };
 }

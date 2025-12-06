@@ -4,6 +4,7 @@
 import * as React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 import { toast } from "sonner";
 import { getToken, useLoginMutation } from "@/lib/auth/mutation";
 import { cn } from "@/lib/utils";
@@ -25,7 +26,11 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!email || !password) return toast.error("Email & kata sandi wajib diisi");
-    await login.mutateAsync({ email, password });
+    const res = await login.mutateAsync({ email, password });
+    if (res.role) Cookies.set("role", res.role);
+    if (res.name) Cookies.set("name", res.name);
+    if (res.email) Cookies.set("email", res.email);
+
     if (getToken()) router.replace("/dashboard");
   }
 
@@ -36,13 +41,13 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
         <div className="bg-gradient-to-br from-teal-600 to-emerald-600 p-6 text-white">
           <div className="mx-auto flex w-full max-w-sm items-center gap-3">
             <div className="relative h-10 w-10 overflow-hidden rounded-xl border border-white/20 bg-white/10">
-                <Image
-                  src="/images/logo.jpg"
-                  alt="Logo SMK 3 Dolopo"
-                  fill
-                  sizes="40px"
-                  className="object-contain"
-                />
+              <Image
+                src="/images/logo.jpg"
+                alt="Logo SMK 3 Dolopo"
+                fill
+                sizes="40px"
+                className="object-contain"
+              />
             </div>
             <div className="leading-tight">
               <div className="font-semibold">CMS SMK 3 Dolopo</div>
