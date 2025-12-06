@@ -30,9 +30,9 @@ export function RegistrationsRecentTable() {
       <CardHeader className="flex-row items-center justify-between">
         <div>
           <CardTitle>Pendaftar Terbaru</CardTitle>
-          <p className="text-sm text-muted-foreground">
+          <div className="text-sm text-muted-foreground">
             5 pendaftar terakhir • klik No Daftar untuk kelola
-          </p>
+          </div>
         </div>
         <Link href="/dashboard/pendaftaran" className="text-sm underline-offset-4 hover:underline">
           Kelola

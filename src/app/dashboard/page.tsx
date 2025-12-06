@@ -1,4 +1,3 @@
-// src/app/dashboard/page.tsx
 "use client";
 
 import * as React from "react";
@@ -10,8 +9,11 @@ import RegistrationsSummaryContainer from "./components/RegistrationsSummaryCont
 import Cookies from "js-cookie";
 
 export default function Page() {
-  const role = Cookies.get("role");
-  const isSuperAdmin = role === "SUPER_ADMIN";
+  const [isSuperAdmin, setIsSuperAdmin] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsSuperAdmin(Cookies.get("role") === "SUPER_ADMIN");
+  }, []);
 
   return (
     <main className="p-4">

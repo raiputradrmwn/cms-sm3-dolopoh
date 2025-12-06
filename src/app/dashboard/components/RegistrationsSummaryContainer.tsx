@@ -1,4 +1,3 @@
-// src/components/dashboard/RegistrationsSummaryContainer.tsx
 "use client";
 
 import * as React from "react";
