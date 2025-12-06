@@ -55,11 +55,11 @@ export default function Page() {
 
         {/* Grid konten */}
         <section className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-6 min-w-0">
             <NewsRecentTable />
             {isSuperAdmin && <RegistrationsRecentTable />}
           </div>
-          <div className="space-y-6">
+          <div className="space-y-6 min-w-0">
             {isSuperAdmin && <RegistrationsSummaryContainer />}
           </div>
         </section>

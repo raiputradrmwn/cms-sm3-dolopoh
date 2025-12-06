@@ -66,8 +66,8 @@ export default function CareersListPage() {
           <CardTitle>Semua Lowongan Pekerjaan</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="rounded-lg border shadow-sm overflow-hidden">
-            <Table className="text-sm table-fixed">
+          <div className="rounded-lg border shadow-sm overflow-x-auto">
+            <Table className="text-sm table-fixed min-w-[800px]">
               <TableHeader className="bg-background">
                 <TableRow>
                   <TableHead className="w-auto">Judul</TableHead>

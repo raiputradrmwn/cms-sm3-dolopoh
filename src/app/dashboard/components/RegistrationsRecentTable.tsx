@@ -40,8 +40,8 @@ export function RegistrationsRecentTable() {
       </CardHeader>
 
       <CardContent>
-        <div className="rounded-lg border shadow-sm overflow-hidden">
-          <Table className="text-sm">
+        <div className="rounded-lg border shadow-sm overflow-x-auto">
+          <Table className="text-sm min-w-[800px]">
             <TableHeader className="sticky top-0 bg-background">
               <TableRow className="hover:bg-transparent">
                 <TableHead className="w-[50px]">No</TableHead>

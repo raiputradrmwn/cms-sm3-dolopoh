@@ -16,7 +16,7 @@ type Props = {
 
 export default function StudentsTable({ items, loading }: Props) {
   return (
-    <div className="rounded-lg border shadow-sm overflow-hidden">
+    <div className="rounded-lg border shadow-sm overflow-x-auto">
       <Table className="text-sm">
         <TableHeader className="bg-background">
           <TableRow>
