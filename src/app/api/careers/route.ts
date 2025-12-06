@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
+export const dynamic = "force-dynamic";
+
 const API_BASE = process.env.API_BASE_URL!;
 
 export async function GET(req: Request) {
@@ -26,7 +28,14 @@ export async function GET(req: Request) {
     return resp;
   }
 
-  return NextResponse.json(data, { status: upstream.status });
+  return NextResponse.json(data, {
+    status: upstream.status,
+    headers: {
+      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+      "Pragma": "no-cache",
+      "Expires": "0",
+    },
+  });
 }
 
 export async function POST(req: Request) {

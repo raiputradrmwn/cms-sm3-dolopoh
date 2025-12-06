@@ -21,6 +21,10 @@ import api from "@/lib/api/axios";
 
 export default function CareersListPage() {
   const { data: envelope, isFetching, refetch } = useCareers({ page: 1, limit: 10 });
+
+  React.useEffect(() => {
+    refetch();
+  }, [refetch]);
   const items = envelope?.data || [];
 
   const handleDelete = (id: string) => {

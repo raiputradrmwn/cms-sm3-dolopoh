@@ -18,6 +18,10 @@ export default function NewsListPage() {
   // ambil berita terbit (published) page=1 limit=10
   const { data: items = [], isFetching, refetch } = useRecentPublishedNews({ page: 1, limit: 10 });
 
+  React.useEffect(() => {
+    refetch();
+  }, [refetch]);
+
   const handleDelete = (id: string) => {
     toast("Apakah Anda yakin ingin menghapus berita ini?", {
       action: {

@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,7 @@ import { ImagePlus, Save } from "lucide-react";
 import NewsEditor from "@/app/dashboard/berita/components/Editor"; // Reusing Editor
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { cn } from "@/lib/utils";
+import { useCreateCareer } from "@/lib/careers/mutations";
 
 type CreateCareerResponse = {
   data?: { id?: string };
@@ -45,6 +47,8 @@ export default function CareerCreatePage() {
     e.target.value = "";
   };
 
+  const mutation = useCreateCareer();
+
   const onSubmit = async () => {
     if (!title.trim()) return toast.error("Judul wajib diisi");
     if (!location.trim()) return toast.error("Lokasi wajib diisi");
@@ -59,28 +63,28 @@ export default function CareerCreatePage() {
 
     setSubmitting(true);
     try {
-      const fd = new FormData();
-      fd.append("title", title);
-      fd.append("job_description", jobDescription);
-      fd.append("requirements", requirements);
-      fd.append("location", location);
-      fd.append("benefits", benefits);
-      fd.append("deadline", deadline);
-      if (photo) fd.append("photo", photo);
-
-      const res = await fetch("/api/careers", { method: "POST", body: fd });
-      const data = (await res.json().catch(() => ({}))) as CreateCareerResponse;
-
-      if (!res.ok) {
-        throw new Error(data?.meta?.message || "Gagal menyimpan karir");
-      }
+      await mutation.mutateAsync({
+        title,
+        job_description: jobDescription,
+        requirements,
+        location,
+        benefits,
+        deadline,
+        photo,
+      });
 
       toast.success("Karir berhasil disimpan");
+      router.refresh();
       router.push("/dashboard/careers");
     } catch (error) {
       console.error(error);
-      const message = error instanceof Error ? error.message : String(error);
-      toast.error(message || "Gagal menyimpan karir");
+      let message = "Gagal menyimpan karir";
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        message = error.response.data.message;
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }

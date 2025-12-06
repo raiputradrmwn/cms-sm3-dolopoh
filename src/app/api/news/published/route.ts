@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 const API_BASE = process.env.API_BASE_URL!; // contoh: https://api.smk3dolopo.id
 
 export async function GET(req: Request) {
@@ -27,5 +29,12 @@ export async function GET(req: Request) {
     return resp;
   }
 
-  return NextResponse.json(data, { status: r.status });
+  return NextResponse.json(data, {
+    status: r.status,
+    headers: {
+      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+      "Pragma": "no-cache",
+      "Expires": "0",
+    },
+  });
 }

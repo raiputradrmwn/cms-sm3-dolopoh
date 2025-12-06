@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -22,6 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { cn } from "@/lib/utils";
+import { useCreateNewsMutation } from "@/lib/news/mutations";
 type CreateNewsResponse = {
   data?: { id?: string };
   meta?: { message?: string };
@@ -51,6 +53,8 @@ export default function NewsCreatePage() {
     e.target.value = "";
   };
 
+  const mutation = useCreateNewsMutation();
+
   const onSubmit = async () => {
     if (!title.trim()) return toast.error("Judul wajib diisi");
     const emptyHtml =
@@ -59,25 +63,25 @@ export default function NewsCreatePage() {
 
     setSubmitting(true);
     try {
-      const fd = new FormData();
-      fd.append("title", title);
-      fd.append("content", content);
-      fd.append("status", published ? "PUBLISHED" : "DRAFT");
-      if (photo) fd.append("photo", photo);
-
-      const res = await fetch("/api/news", { method: "POST", body: fd });
-      const data = (await res.json().catch(() => ({}))) as CreateNewsResponse;
-
-      if (!res.ok) {
-        throw new Error(data?.meta?.message || "Gagal menyimpan berita");
-      }
+      await mutation.mutateAsync({
+        title,
+        content,
+        status: published ? "PUBLISHED" : "DRAFT",
+        photo,
+      });
 
       toast.success("Berita berhasil disimpan");
+      router.refresh();
       router.push("/dashboard/berita");
     } catch (error) {
       console.error(error);
-      const message = error instanceof Error ? error.message : String(error);
-      toast.error(message || "Gagal menyimpan berita");
+      let message = "Gagal menyimpan berita";
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        message = error.response.data.message;
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }

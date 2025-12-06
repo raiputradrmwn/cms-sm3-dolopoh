@@ -34,18 +34,18 @@ export async function postNews(input: CreateNewsInput) {
   fd.append("status", input.status);
   if (input.photo) fd.append("photo", input.photo);
 
-  const res = await fetch("/api/news", { method: "POST", body: fd });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data?.message || "Gagal menyimpan berita");
-  return data as { data?: { id?: string } };
+  const { data } = await api.post("/news", fd, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data;
 }
 
 export function useCreateNewsMutation() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: postNews,
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["news", "published"] });
+    onSuccess: async () => {
+      await qc.invalidateQueries({ queryKey: ["news"] });
     },
   });
 }

@@ -28,10 +28,8 @@ export function useRecentPublishedNews(params = { page: 1, limit: 5 }) {
       });
       return r.data;
     },
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000,
     select: (resp) => (resp?.data?.data ?? []).map(mapToRow),
   });
 }
